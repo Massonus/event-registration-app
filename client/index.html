@@ -23,7 +23,28 @@
 
     <hr>
 
-    <div id="events-list" class="row"></div>
+    <div class="row">
+        <div class="col-md-6">
+            <label for="sortBy" class="form-label">Sort By:</label>
+            <select id="sortBy" class="form-control">
+                <option value="title">Title</option>
+                <option value="eventDate">Event Date</option>
+                <option value="organizer">Organizer</option>
+            </select>
+        </div>
+        <div class="col-md-6">
+            <label for="sortOrder" class="form-label">Order:</label>
+            <select id="sortOrder" class="form-control">
+                <option value="asc">Ascending</option>
+                <option value="desc">Descending</option>
+            </select>
+        </div>
+    </div>
+
+
+    <div id="events-list" class="row">
+        <!--events here-->
+    </div>
 
     <nav aria-label="Event pagination">
         <ul id="pagination" class="pagination justify-content-center mt-4">

@@ -3,9 +3,22 @@ const router = express.Router();
 const Event = require('./models/event');
 
 router.get('/events', async (req, res) => {
-    const events = await Event.find();
-    res.json(events);
+    const { sortBy, order } = req.query;
+    const sortOptions = {};
+
+    if (sortBy && order) {
+        sortOptions[sortBy] = order === 'desc' ? -1 : 1;
+    }
+
+    try {
+        const events = await Event.find().sort(sortOptions);
+        res.json(events);
+    } catch (error) {
+        console.error('Error fetching events:', error);
+        res.status(500).send('Error fetching events');
+    }
 });
+
 
 router.post('/events', async (req, res) => {
     const {title, description, eventDate, organizer} = req.body;

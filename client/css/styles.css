@@ -7,8 +7,21 @@ body {
 }
 
 .event-card {
-    margin-bottom: 20px;
+    min-height: 200px;
+    max-height: 250px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin-bottom: 10px;
 }
+
+.card-title, .card-text {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 
 button {
     margin-right: 10px;

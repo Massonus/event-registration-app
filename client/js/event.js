@@ -31,10 +31,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.error('Error:', error);
             });
     });
+    document.getElementById('sortBy').addEventListener('change', () => loadEvents());
+    document.getElementById('sortOrder').addEventListener('change', () => loadEvents());
 });
 
+
 function loadEvents(page = 1, limit = 8) {
-    fetch('/api/events')
+    const sortBy = document.getElementById('sortBy').value;
+    const sortOrder = document.getElementById('sortOrder').value;
+
+    fetch(`/api/events?sortBy=${sortBy}&order=${sortOrder}`)
         .then(response => response.json())
         .then(events => {
             const totalEvents = events.length;
