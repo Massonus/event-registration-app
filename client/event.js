@@ -71,6 +71,11 @@ function displayEvents(events) {
     });
 }
 
+function registerForEvent(eventId) {
+    window.location.href = `/register.html?eventId=${eventId}`;
+}
+
+
 function setupPagination(totalPages, currentPage) {
     const pagination = document.getElementById('pagination');
     pagination.innerHTML = '';

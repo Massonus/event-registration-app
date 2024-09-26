@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Registration</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container mt-5">
+    <h2>Event Registration</h2>
+    <form id="registration-form">
+        <div class="form-group">
+            <label for="name">Full name</label>
+            <input type="text" class="form-control" id="name" placeholder="Enter your full name" required>
+        </div>
+        <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" class="form-control" id="email" placeholder="Enter your email" required>
+        </div>
+        <div class="form-group">
+            <label for="birthDate">Date of birth</label>
+            <input type="date" class="form-control" id="birthDate" required>
+        </div>
+        <div class="form-group">
+            <label>Where did you hear about this event?</label>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="heardFrom" id="socialMedia" value="Social media" required>
+                <label class="form-check-label" for="socialMedia">Social media</label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="heardFrom" id="friends" value="Friends" required>
+                <label class="form-check-label" for="friends">Friends</label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="heardFrom" id="foundMyself" value="Found myself" required>
+                <label class="form-check-label" for="foundMyself">Found myself</label>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+</div>
+
+<script>
+    document.getElementById('registration-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const eventId = urlParams.get('eventId');
+
+        const name = document.getElementById('name').value;
+        const email = document.getElementById('email').value;
+        const birthDate = document.getElementById('birthDate').value;
+        const heardFrom = document.querySelector('input[name="heardFrom"]:checked').value;
+
+        fetch('/api/register', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                eventId,
+                name,
+                email,
+                birthDate,
+                heardFrom
+            })
+        })
+            .then(response => {
+                if (response.ok) {
+                    alert('Successfully registered!');
+                    window.location.href = '/'; // Redirect to main page after successful registration
+                } else {
+                    alert('Failed to register');
+                }
+            })
+            .catch(error => console.error('Error:', error));
+    });
+</script>
+</body>
+</html>
