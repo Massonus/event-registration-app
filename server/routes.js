@@ -3,7 +3,7 @@ const router = express.Router();
 const Event = require('./models/event');
 
 router.get('/events', async (req, res) => {
-    const { sortBy, order } = req.query;
+    const {sortBy, order} = req.query;
     const sortOptions = {};
 
     if (sortBy && order) {
@@ -48,10 +48,16 @@ router.post('/register', async (req, res) => {
 
 router.get('/participants/:eventId', async (req, res) => {
     try {
+        const searchQuery = req.query.search?.toLowerCase() || '';
         const event = await Event.findById(req.params.eventId).select('title participants');
         if (!event) return res.status(404).send('Event not found');
 
-        const participants = event.participants.map(participant => ({
+        const filteredParticipants = event.participants.filter(participant =>
+            participant.name.toLowerCase().includes(searchQuery) ||
+            participant.email.toLowerCase().includes(searchQuery)
+        );
+
+        const participants = filteredParticipants.map(participant => ({
             name: participant.name,
             email: participant.email,
             birthDate: participant.birthDate,

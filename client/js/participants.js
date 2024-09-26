@@ -2,14 +2,36 @@ document.addEventListener('DOMContentLoaded', () => {
     const urlParams = new URLSearchParams(window.location.search);
     const eventId = urlParams.get('eventId');
 
-    fetch(`/api/participants/${eventId}`)
+    loadParticipants(eventId);
+
+    const searchForm = document.getElementById('search-form');
+    searchForm.addEventListener('submit', function (e) {
+        e.preventDefault();
+        const searchQuery = document.getElementById('searchQuery').value.trim();
+        if (searchQuery) {
+            loadParticipants(eventId, searchQuery);
+        }
+    });
+
+    document.getElementById('resetSearch').addEventListener('click', function () {
+        document.getElementById('searchQuery').value = '';
+        loadParticipants(eventId);
+    });
+});
+
+function loadParticipants(eventId, searchQuery = '') {
+    fetch(`/api/participants/${eventId}?search=${searchQuery}`)
         .then(response => response.json())
         .then(participants => {
             const participantsList = document.getElementById('participants-list');
             const eventTitle = document.getElementById('event-title');
 
+            participantsList.innerHTML = '';
+
             if (participants.length === 0) {
-                eventTitle.innerHTML = 'No participants found for this event';
+                eventTitle.innerHTML = searchQuery
+                    ? `No participants found for the search query "${searchQuery}"`
+                    : 'No participants found for this event';
                 return;
             }
 
@@ -30,4 +52,4 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         })
         .catch(error => console.error('Error:', error));
-});
+}

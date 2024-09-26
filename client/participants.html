@@ -9,6 +9,13 @@
 <body>
 <div class="container mt-5">
     <h2 id="event-title">Event Participants</h2>
+
+    <form id="search-form" class="form-inline mb-4">
+        <input type="text" id="searchQuery" class="form-control mr-2" placeholder="Search by name or email">
+        <button type="submit" class="btn btn-primary">Search</button>
+        <button id="resetSearch" type="button" class="btn btn-secondary ml-2">Reset</button>
+    </form>
+
     <div class="row" id="participants-list"></div>
 </div>
 
