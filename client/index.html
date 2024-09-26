@@ -4,24 +4,36 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Event Registration App</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-<h1>Events Board</h1>
 
-<h2>Add New Event</h2>
-<form id="event-form">
-    <input type="text" id="title" placeholder="Title" required>
-    <input type="text" id="description" placeholder="Description" required>
-    <input type="date" id="eventDate" required>
-    <input type="text" id="organizer" placeholder="Organizer" required>
-    <button type="submit">Add Event</button>
-</form>
+<div class="container mt-5">
+    <h1 class="text-center">Events Board</h1>
 
-<hr>
+    <h2>Add New Event</h2>
+    <form id="event-form" class="form-inline mb-4">
+        <input type="text" id="title" class="form-control mr-2 mb-2" placeholder="Title" required>
+        <input type="text" id="description" class="form-control mr-2 mb-2" placeholder="Description" required>
+        <input type="date" id="eventDate" class="form-control mr-2 mb-2" required>
+        <input type="text" id="organizer" class="form-control mr-2 mb-2" placeholder="Organizer" required>
+        <button type="submit" class="btn btn-primary mb-2">Add Event</button>
+    </form>
 
-<div id="events-list"></div>
+    <hr>
 
+    <div id="events-list" class="row"></div>
+
+    <nav aria-label="Event pagination">
+        <ul id="pagination" class="pagination justify-content-center mt-4">
+            <!-- Пагинация появится здесь -->
+        </ul>
+    </nav>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <script src="event.js"></script>
 </body>
 </html>
