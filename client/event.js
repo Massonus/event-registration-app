@@ -75,6 +75,10 @@ function registerForEvent(eventId) {
     window.location.href = `/register.html?eventId=${eventId}`;
 }
 
+function viewParticipants(eventId) {
+    window.location.href = `/participants.html?eventId=${eventId}`;
+}
+
 
 function setupPagination(totalPages, currentPage) {
     const pagination = document.getElementById('pagination');
