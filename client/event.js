@@ -75,10 +75,58 @@ function setupPagination(totalPages, currentPage) {
     const pagination = document.getElementById('pagination');
     pagination.innerHTML = '';
 
-    for (let page = 1; page <= totalPages; page++) {
+    const createPageItem = (page, isActive = false) => {
         const pageItem = document.createElement('li');
-        pageItem.className = `page-item ${page === currentPage ? 'active' : ''}`;
+        pageItem.className = `page-item ${isActive ? 'active' : ''}`;
         pageItem.innerHTML = `<a class="page-link" href="#" onclick="loadEvents(${page})">${page}</a>`;
-        pagination.appendChild(pageItem);
+        return pageItem;
+    };
+
+    const createDots = () => {
+        const dots = document.createElement('li');
+        dots.className = 'page-item disabled';
+        dots.innerHTML = `<span class="page-link">...</span>`;
+        return dots;
+    };
+
+    // Add "Previous" arrow
+    const prevPageItem = document.createElement('li');
+    prevPageItem.className = `page-item ${currentPage === 1 ? 'disabled' : ''}`;
+    prevPageItem.innerHTML = `<a class="page-link" href="#" aria-label="Previous" onclick="loadEvents(${currentPage - 1})"><span aria-hidden="true">&laquo;</span></a>`;
+    pagination.appendChild(prevPageItem);
+
+    // First three pages
+    for (let page = 1; page <= 3; page++) {
+        pagination.appendChild(createPageItem(page, page === currentPage));
     }
+
+    // Dots between third and last pages
+    if (currentPage > 4) {
+        pagination.appendChild(createDots());
+    }
+
+    // Pages around current page
+    if (currentPage > 3 && currentPage < totalPages - 2) {
+        pagination.appendChild(createPageItem(currentPage - 1));
+        pagination.appendChild(createPageItem(currentPage, true));
+        pagination.appendChild(createPageItem(currentPage + 1));
+    }
+
+    // Dots before last two pages
+    if (currentPage < totalPages - 3) {
+        pagination.appendChild(createDots());
+    }
+
+    // Last two pages
+    for (let page = totalPages - 1; page <= totalPages; page++) {
+        if (page >= 4) {
+            pagination.appendChild(createPageItem(page, page === currentPage));
+        }
+    }
+
+    // Add "Next" arrow
+    const nextPageItem = document.createElement('li');
+    nextPageItem.className = `page-item ${currentPage === totalPages ? 'disabled' : ''}`;
+    nextPageItem.innerHTML = `<a class="page-link" href="#" aria-label="Next" onclick="loadEvents(${currentPage + 1})"><span aria-hidden="true">&raquo;</span></a>`;
+    pagination.appendChild(nextPageItem);
 }
