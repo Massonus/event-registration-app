@@ -7,10 +7,17 @@ router.get('/events', async (req, res) => {
     res.json(events);
 });
 
+router.post('/events', async (req, res) => {
+    const {title, description, eventDate, organizer} = req.body;
+    const newEvent = new Event({title, description, eventDate, organizer, participants: []});
+    await newEvent.save();
+    res.json(newEvent);
+});
+
 router.post('/register', async (req, res) => {
-    const { eventId, name, email, birthDate, heardFrom } = req.body;
+    const {eventId, name, email, birthDate, heardFrom} = req.body;
     const event = await Event.findById(eventId);
-    event.participants.push({ name, email, birthDate, heardFrom });
+    event.participants.push({name, email, birthDate, heardFrom});
     await event.save();
     res.status(200).send('Registered successfully');
 });
