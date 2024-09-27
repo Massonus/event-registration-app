@@ -7,6 +7,7 @@
 - **Frontend**: HTML, CSS, JavaScript (without any framework)
 - **Backend**: NodeJS (Express.js)
 - **Database**: MongoDB
+- **Third-party API (Ticketmaster.com)**: A separate script runs every 4 hours, fetching available events
 
 ## Installation
 
