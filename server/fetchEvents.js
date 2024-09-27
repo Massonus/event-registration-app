@@ -1,4 +1,3 @@
-const mongoose = require('mongoose');
 const fetch = require('node-fetch');
 const Event = require('./models/event');
 const db = require('./database');
@@ -47,9 +46,4 @@ const runScript = async () => {
     }, 1800000);
 };
 
-runScript().then(() => {
-    console.log('Initial fetch and save completed, now running every 30 minutes');
-}).catch(err => {
-    console.error('Script encountered an error', err);
-    mongoose.connection.close();
-});
+module.exports = runScript;
