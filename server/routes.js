@@ -87,4 +87,28 @@ router.get('/participants/:eventId', async (req, res) => {
     }
 });
 
+router.get('/registrations/:eventId/daily', async (req, res) => {
+    try {
+        const event = await Event.findById(req.params.eventId);
+        if (!event) return res.status(404).send('Event not found');
+
+        const registrations = event.participants.map(participant => participant.createdAt);
+        const dailyRegistrations = {};
+
+        registrations.forEach(date => {
+            const day = new Date(date).toLocaleDateString();
+            dailyRegistrations[day] = (dailyRegistrations[day] || 0) + 1;
+        });
+
+        const dates = Object.keys(dailyRegistrations);
+        const counts = Object.values(dailyRegistrations);
+
+        res.json({ dates, counts });
+    } catch (error) {
+        console.error('Error fetching daily registrations:', error);
+        res.status(500).send('Error fetching daily registrations');
+    }
+});
+
+
 module.exports = router;
