@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
+    let isInfiniteScroll = false;
     loadEvents();
 
     const eventForm = document.getElementById('event-form');
@@ -31,31 +32,64 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.error('Error:', error);
             });
     });
+
     document.getElementById('sortBy').addEventListener('change', () => loadEvents());
     document.getElementById('sortOrder').addEventListener('change', () => loadEvents());
+
+    const handleScroll = () => {
+
+        const scrollTop = window.scrollY;
+        const windowHeight = window.innerHeight;
+        const documentHeight = document.documentElement.scrollHeight;
+
+        if (scrollTop + windowHeight >= documentHeight - 100) {
+            const currentPage = parseInt(document.querySelector('#pagination .page-item.active')?.textContent || 1);
+            loadEvents(currentPage + 1, 8, true);
+        }
+    };
+
+    document.getElementById('toggleMode').addEventListener('click', () => {
+        isInfiniteScroll = !isInfiniteScroll;
+        document.getElementById('pagination').style.display = isInfiniteScroll ? 'none' : 'flex';
+        const currentPage = parseInt(document.querySelector('#pagination .page-item.active')?.textContent || 1);
+
+        if (isInfiniteScroll) {
+            window.addEventListener('scroll', handleScroll);
+            loadEvents(1, 8, true);
+        } else {
+            window.removeEventListener('scroll', handleScroll);
+            loadEvents(currentPage, 8, false);
+        }
+    });
+
 });
 
-
-function loadEvents(page = 1, limit = 8) {
+function loadEvents(page = 1, limit = 8, append = false) {
     const sortBy = document.getElementById('sortBy').value;
     const sortOrder = document.getElementById('sortOrder').value;
+    const isInfiniteScroll = document.getElementById('toggleMode').dataset.mode === 'infinite';
 
-    fetch(`/api/events?sortBy=${sortBy}&order=${sortOrder}`)
+    fetch(`/api/events?sortBy=${sortBy}&order=${sortOrder}&page=${page}&limit=${limit}`)
         .then(response => response.json())
-        .then(events => {
-            const totalEvents = events.length;
+        .then(responseData => {
+            const {events, totalEvents} = responseData;
             const totalPages = Math.ceil(totalEvents / limit);
-            const start = (page - 1) * limit;
-            const end = start + limit;
 
-            displayEvents(events.slice(start, end));
-            setupPagination(totalPages, page);
+            displayEvents(events, append);
+
+            if (!isInfiniteScroll) {
+                setupPagination(totalPages, page);
+            }
+        })
+        .catch(error => {
+            console.error('Event load error:', error);
         });
 }
 
-function displayEvents(events) {
+
+function displayEvents(events, append = false) {
     const eventList = document.getElementById('events-list');
-    eventList.innerHTML = '';
+    if (!append) eventList.innerHTML = '';
 
     events.forEach(event => {
         const eventElement = document.createElement('div');
@@ -90,6 +124,10 @@ function setupPagination(totalPages, currentPage) {
     const pagination = document.getElementById('pagination');
     pagination.innerHTML = '';
 
+    if (totalPages <= 1) {
+        return;
+    }
+
     const createPageItem = (page, isActive = false) => {
         const pageItem = document.createElement('li');
         pageItem.className = `page-item ${isActive ? 'active' : ''}`;
@@ -104,44 +142,45 @@ function setupPagination(totalPages, currentPage) {
         return dots;
     };
 
-    // Add "Previous" arrow
     const prevPageItem = document.createElement('li');
     prevPageItem.className = `page-item ${currentPage === 1 ? 'disabled' : ''}`;
     prevPageItem.innerHTML = `<a class="page-link" href="#" aria-label="Previous" onclick="loadEvents(${currentPage - 1})"><span aria-hidden="true">&laquo;</span></a>`;
     pagination.appendChild(prevPageItem);
 
-    // First three pages
-    for (let page = 1; page <= 3; page++) {
-        pagination.appendChild(createPageItem(page, page === currentPage));
-    }
-
-    // Dots between third and last pages
-    if (currentPage > 4) {
-        pagination.appendChild(createDots());
-    }
-
-    // Pages around current page
-    if (currentPage > 3 && currentPage < totalPages - 2) {
-        pagination.appendChild(createPageItem(currentPage - 1));
-        pagination.appendChild(createPageItem(currentPage, true));
-        pagination.appendChild(createPageItem(currentPage + 1));
-    }
-
-    // Dots before last two pages
-    if (currentPage < totalPages - 3) {
-        pagination.appendChild(createDots());
-    }
-
-    // Last two pages
-    for (let page = totalPages - 1; page <= totalPages; page++) {
-        if (page >= 4) {
+    if (totalPages <= 5) {
+        for (let page = 1; page <= totalPages; page++) {
             pagination.appendChild(createPageItem(page, page === currentPage));
+        }
+    } else {
+
+        if (currentPage <= 3) {
+            for (let page = 1; page <= 3; page++) {
+                pagination.appendChild(createPageItem(page, page === currentPage));
+            }
+            pagination.appendChild(createDots());
+            pagination.appendChild(createPageItem(totalPages));
+        } else if (currentPage >= totalPages - 2) {
+
+            pagination.appendChild(createPageItem(1));
+            pagination.appendChild(createDots());
+            for (let page = totalPages - 2; page <= totalPages; page++) {
+                pagination.appendChild(createPageItem(page, page === currentPage));
+            }
+        } else {
+
+            pagination.appendChild(createPageItem(1));
+            pagination.appendChild(createDots());
+            pagination.appendChild(createPageItem(currentPage - 1));
+            pagination.appendChild(createPageItem(currentPage, true));
+            pagination.appendChild(createPageItem(currentPage + 1));
+            pagination.appendChild(createDots());
+            pagination.appendChild(createPageItem(totalPages));
         }
     }
 
-    // Add "Next" arrow
     const nextPageItem = document.createElement('li');
     nextPageItem.className = `page-item ${currentPage === totalPages ? 'disabled' : ''}`;
     nextPageItem.innerHTML = `<a class="page-link" href="#" aria-label="Next" onclick="loadEvents(${currentPage + 1})"><span aria-hidden="true">&raquo;</span></a>`;
     pagination.appendChild(nextPageItem);
 }
+

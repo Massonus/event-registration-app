@@ -5,7 +5,9 @@ const participantSchema = new mongoose.Schema({
     email: String,
     birthDate: Date,
     heardFrom: String,
+    createdAt: { type: Date, default: Date.now }
 });
+
 
 const eventSchema = new mongoose.Schema({
     title: String,

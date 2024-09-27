@@ -16,7 +16,7 @@ document.getElementById('registration-form').addEventListener('submit', function
     }
     if (!email) {
         errors.push('Email is required.');
-    } else if (!/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email)) {
+    } else if (!/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email)) {
         errors.push('Invalid email format.');
     }
     if (!birthDate) {

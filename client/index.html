@@ -6,10 +6,12 @@
     <title>Event Registration App</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="css/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 </head>
 <body>
 
-<div class="container mt-5">
+<div class="container mt-3">
     <h1 class="text-center">Events Board</h1>
 
     <h2>Add New Event</h2>
@@ -41,6 +43,7 @@
         </div>
     </div>
 
+    <button id="toggleMode" class="btn btn-info mt-4" data-mode="pagination">Toggle to Infinite Scroll</button>
 
     <div id="events-list" class="row">
         <!--events here-->

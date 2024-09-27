@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const eventId = urlParams.get('eventId');
 
     loadParticipants(eventId);
+    loadRegistrationChart(eventId);
 
     const searchForm = document.getElementById('search-form');
     searchForm.addEventListener('submit', function (e) {
@@ -35,7 +36,7 @@ function loadParticipants(eventId, searchQuery = '') {
                 return;
             }
 
-            eventTitle.innerHTML = `"${participants[0].eventTitle}" participants`;
+            eventTitle.innerHTML = `${participants[0].eventTitle} Participants`;
 
             participants.forEach(participant => {
                 const participantElement = document.createElement('div');
@@ -53,3 +54,63 @@ function loadParticipants(eventId, searchQuery = '') {
         })
         .catch(error => console.error('Error:', error));
 }
+
+function loadRegistrationChart(eventId) {
+    fetch(`/api/registrations/${eventId}/daily`)
+        .then(response => response.json())
+        .then(data => {
+            const ctx = document.getElementById('registrationChart').getContext('2d');
+            const chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: data.dates,
+                    datasets: [{
+                        label: 'Registrations per Day',
+                        data: data.counts,
+                        borderColor: 'rgba(0, 0, 255, 1)',
+                        backgroundColor: 'rgba(0, 0, 255, 0.1)',
+                        fill: false,
+                        pointRadius: 5,
+                        pointBackgroundColor: 'rgba(0, 0, 255, 1)',
+                        pointBorderColor: '#fff',
+                        pointHoverRadius: 7,
+                        pointHoverBackgroundColor: 'rgba(0, 0, 255, 1)',
+                        tension: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'bottom',
+                        },
+                        title: {
+                            display: true,
+                            text: 'Registrations per Day'
+                        }
+                    },
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Days'
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Number of Registrations'
+                            },
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 10
+                            }
+                        }
+                    }
+                }
+            });
+        })
+        .catch(error => console.error('Error loading chart:', error));
+}
+
