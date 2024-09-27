@@ -34,4 +34,4 @@ The advanced level also includes all features from the base and middle levels:
 
 ## Hosted Application
 
-You can access the live version of the application at: ec2-18-156-135-252.eu-central-1.compute.amazonaws.com](#)
+You can access the live version of the application at: <a href="ec2-18-156-135-252.eu-central-1.compute.amazonaws.com" target="_blank">Click here to see the deployment</a>
