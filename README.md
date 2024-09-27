@@ -6,15 +6,15 @@ You can access the live version of the application at: <a href="http://ec2-18-15
 
 ## Tech Stack
 
-- **Frontend**: HTML, CSS, JavaScript (with or without any framework)
-- **Backend**: NodeJS (with or without any framework)
-- **Database**: Relational or non-relational database
+- **Frontend**: HTML, CSS, JavaScript (without any framework)
+- **Backend**: NodeJS (Express.js)
+- **Database**: MongoDB
 
 ## Installation
 
 1. Clone the repository:
     ```bash
-    git clone <repository_url>
+    git clone <this_repository_url>
     ```
 2. Install dependencies:
     ```bash
