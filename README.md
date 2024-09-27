@@ -1,14 +1,8 @@
-# Events Registration App
+# Advanced Level
 
-A web-based application for event registration, developed as part of the ET-school test task.
+## Hosted Application
 
-## Overview
-
-This application allows users to browse, register, and view participants for various events. It has been developed to meet the advanced level requirements.
-
-### Advanced Level
-
-The advanced level also includes all features from the base and middle levels:
+You can access the live version of the application at: <a href="http://ec2-18-156-135-252.eu-central-1.compute.amazonaws.com/" target="_blank">Click here to see the deployment</a>
 
 ## Tech Stack
 
@@ -32,6 +26,4 @@ The advanced level also includes all features from the base and middle levels:
     npm start
     ```
 
-## Hosted Application
 
-You can access the live version of the application at: <a href="http://ec2-18-156-135-252.eu-central-1.compute.amazonaws.com/" target="_blank">Click here to see the deployment</a>
