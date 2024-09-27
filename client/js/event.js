@@ -36,7 +36,6 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('sortBy').addEventListener('change', () => loadEvents());
     document.getElementById('sortOrder').addEventListener('change', () => loadEvents());
 
-    // Обработка кнопки переключения режимов
     document.getElementById('toggleMode').addEventListener('click', () => {
         isInfiniteScroll = !isInfiniteScroll;
         document.getElementById('pagination').style.display = isInfiniteScroll ? 'none' : 'flex';
@@ -45,9 +44,11 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     document.getElementById('loadMore').addEventListener('click', () => {
-        const currentPage = document.querySelector('#pagination .page-item.active')?.textContent || 1;
-        loadEvents(parseInt(currentPage) + 1, 8, true);
+        const currentPage = parseInt(document.querySelector('#pagination .page-item.active')?.textContent || 1);
+        loadEvents(currentPage + 1, 8, true);
     });
+
+
 });
 
 function loadEvents(page = 1, limit = 8, append = false) {
@@ -55,24 +56,23 @@ function loadEvents(page = 1, limit = 8, append = false) {
     const sortOrder = document.getElementById('sortOrder').value;
     const isInfiniteScroll = document.getElementById('toggleMode').dataset.mode === 'infinite';
 
-    fetch(`/api/events?sortBy=${sortBy}&order=${sortOrder}`)
+    fetch(`/api/events?sortBy=${sortBy}&order=${sortOrder}&page=${page}&limit=${limit}`)
         .then(response => response.json())
-        .then(events => {
-            const totalEvents = events.length;
+        .then(responseData => {
+            const {events, totalEvents} = responseData;
             const totalPages = Math.ceil(totalEvents / limit);
-            const start = (page - 1) * limit;
-            const end = start + limit;
 
-            if (append) {
-                displayEvents(events.slice(start, end), true);
-            } else {
-                displayEvents(events.slice(start, end));
-                if (!isInfiniteScroll) {
-                    setupPagination(totalPages, page);
-                }
+            displayEvents(events, append);
+
+            if (!isInfiniteScroll) {
+                setupPagination(totalPages, page);
             }
+        })
+        .catch(error => {
+            console.error('Ошибка загрузки событий:', error);
         });
 }
+
 
 function displayEvents(events, append = false) {
     const eventList = document.getElementById('events-list');
@@ -125,7 +125,6 @@ function setupPagination(totalPages, currentPage) {
         return dots;
     };
 
-    // Add "Previous" arrow
     const prevPageItem = document.createElement('li');
     prevPageItem.className = `page-item ${currentPage === 1 ? 'disabled' : ''}`;
     prevPageItem.innerHTML = `<a class="page-link" href="#" aria-label="Previous" onclick="loadEvents(${currentPage - 1})"><span aria-hidden="true">&laquo;</span></a>`;

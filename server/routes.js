@@ -3,7 +3,7 @@ const router = express.Router();
 const Event = require('./models/event');
 
 router.get('/events', async (req, res) => {
-    const {sortBy, order} = req.query;
+    const { sortBy, order, page = 1, limit = 8 } = req.query;
     const sortOptions = {};
 
     if (sortBy && order) {
@@ -11,31 +11,47 @@ router.get('/events', async (req, res) => {
     }
 
     try {
-        const events = await Event.find().sort(sortOptions);
-        res.json(events);
+        const pageNumber = parseInt(page);
+        const limitNumber = parseInt(limit);
+
+        const totalEvents = await Event.countDocuments();
+
+        const events = await Event.find()
+            .sort(sortOptions)
+            .skip((pageNumber - 1) * limitNumber)
+            .limit(limitNumber);
+
+        res.json({
+            events,
+            totalEvents
+        });
     } catch (error) {
         console.error('Error fetching events:', error);
         res.status(500).send('Error fetching events');
     }
 });
 
-
 router.post('/events', async (req, res) => {
-    const {title, description, eventDate, organizer} = req.body;
-    const newEvent = new Event({title, description, eventDate, organizer, participants: []});
-    await newEvent.save();
-    res.json(newEvent);
+    const { title, description, eventDate, organizer } = req.body;
+    const newEvent = new Event({ title, description, eventDate, organizer, participants: [] });
+    try {
+        await newEvent.save();
+        res.json(newEvent);
+    } catch (error) {
+        console.error('Error saving event:', error);
+        res.status(500).send('Error saving event');
+    }
 });
 
 router.post('/register', async (req, res) => {
-    const {eventId, name, email, birthDate, heardFrom} = req.body;
+    const { eventId, name, email, birthDate, heardFrom } = req.body;
     try {
         const event = await Event.findById(eventId);
         if (!event) {
             return res.status(404).send('Event not found');
         }
 
-        event.participants.push({name, email, birthDate, heardFrom});
+        event.participants.push({ name, email, birthDate, heardFrom });
         await event.save();
 
         res.status(200).send('Registered successfully');
@@ -44,7 +60,6 @@ router.post('/register', async (req, res) => {
         res.status(500).send('Error registering participant');
     }
 });
-
 
 router.get('/participants/:eventId', async (req, res) => {
     try {
@@ -71,6 +86,5 @@ router.get('/participants/:eventId', async (req, res) => {
         res.status(500).send('Error fetching participants');
     }
 });
-
 
 module.exports = router;
