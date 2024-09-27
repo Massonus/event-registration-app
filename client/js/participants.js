@@ -67,16 +67,34 @@ function loadRegistrationChart(eventId) {
                     datasets: [{
                         label: 'Registrations per Day',
                         data: data.counts,
-                        borderColor: 'rgba(75, 192, 192, 1)',
-                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        borderColor: 'rgba(0, 0, 255, 1)',
+                        backgroundColor: 'rgba(0, 0, 255, 0.1)',
+                        fill: false,
+                        pointRadius: 5,
+                        pointBackgroundColor: 'rgba(0, 0, 255, 1)',
+                        pointBorderColor: '#fff',
+                        pointHoverRadius: 7,
+                        pointHoverBackgroundColor: 'rgba(0, 0, 255, 1)',
+                        tension: 0
                     }]
                 },
                 options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'bottom',
+                        },
+                        title: {
+                            display: true,
+                            text: 'Registrations per Day'
+                        }
+                    },
                     scales: {
                         x: {
                             title: {
                                 display: true,
-                                text: 'Date'
+                                text: 'Days'
                             }
                         },
                         y: {
@@ -84,7 +102,10 @@ function loadRegistrationChart(eventId) {
                                 display: true,
                                 text: 'Number of Registrations'
                             },
-                            beginAtZero: true
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 10
+                            }
                         }
                     }
                 }
@@ -92,3 +113,4 @@ function loadRegistrationChart(eventId) {
         })
         .catch(error => console.error('Error loading chart:', error));
 }
+
