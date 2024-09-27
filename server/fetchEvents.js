@@ -43,7 +43,7 @@ const runScript = async () => {
     setInterval(async () => {
         console.log('Fetching and saving events again...');
         await fetchAndSaveEvents();
-    }, 1800000);
+    }, 14400000);
 };
 
 module.exports = runScript;

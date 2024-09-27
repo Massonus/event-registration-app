@@ -22,7 +22,7 @@ app.listen(3000, () => {
 
     fetchEvents()
         .then(() => {
-            console.log('Initial fetch and save completed, now running every 30 minutes');
+            console.log('Initial fetch and save completed, now running every 4 hours');
         })
         .catch(err => {
             console.error('Script encountered an error', err);
