@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
+    let isInfiniteScroll = false;
     loadEvents();
 
     const eventForm = document.getElementById('event-form');
@@ -31,14 +32,28 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.error('Error:', error);
             });
     });
+
     document.getElementById('sortBy').addEventListener('change', () => loadEvents());
     document.getElementById('sortOrder').addEventListener('change', () => loadEvents());
+
+    // Обработка кнопки переключения режимов
+    document.getElementById('toggleMode').addEventListener('click', () => {
+        isInfiniteScroll = !isInfiniteScroll;
+        document.getElementById('pagination').style.display = isInfiniteScroll ? 'none' : 'block';
+        document.getElementById('loadMore').style.display = isInfiniteScroll ? 'block' : 'none';
+        loadEvents();
+    });
+
+    document.getElementById('loadMore').addEventListener('click', () => {
+        const currentPage = document.querySelector('#pagination .page-item.active')?.textContent || 1;
+        loadEvents(parseInt(currentPage) + 1, 8, true);
+    });
 });
 
-
-function loadEvents(page = 1, limit = 8) {
+function loadEvents(page = 1, limit = 8, append = false) {
     const sortBy = document.getElementById('sortBy').value;
     const sortOrder = document.getElementById('sortOrder').value;
+    const isInfiniteScroll = document.getElementById('toggleMode').dataset.mode === 'infinite';
 
     fetch(`/api/events?sortBy=${sortBy}&order=${sortOrder}`)
         .then(response => response.json())
@@ -48,14 +63,20 @@ function loadEvents(page = 1, limit = 8) {
             const start = (page - 1) * limit;
             const end = start + limit;
 
-            displayEvents(events.slice(start, end));
-            setupPagination(totalPages, page);
+            if (append) {
+                displayEvents(events.slice(start, end), true);
+            } else {
+                displayEvents(events.slice(start, end));
+                if (!isInfiniteScroll) {
+                    setupPagination(totalPages, page);
+                }
+            }
         });
 }
 
-function displayEvents(events) {
+function displayEvents(events, append = false) {
     const eventList = document.getElementById('events-list');
-    eventList.innerHTML = '';
+    if (!append) eventList.innerHTML = '';
 
     events.forEach(event => {
         const eventElement = document.createElement('div');
