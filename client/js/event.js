@@ -111,6 +111,10 @@ function setupPagination(totalPages, currentPage) {
     const pagination = document.getElementById('pagination');
     pagination.innerHTML = '';
 
+    if (totalPages <= 1) {
+        return;
+    }
+
     const createPageItem = (page, isActive = false) => {
         const pageItem = document.createElement('li');
         pageItem.className = `page-item ${isActive ? 'active' : ''}`;
@@ -130,38 +134,40 @@ function setupPagination(totalPages, currentPage) {
     prevPageItem.innerHTML = `<a class="page-link" href="#" aria-label="Previous" onclick="loadEvents(${currentPage - 1})"><span aria-hidden="true">&laquo;</span></a>`;
     pagination.appendChild(prevPageItem);
 
-    // First three pages
-    for (let page = 1; page <= 3; page++) {
-        pagination.appendChild(createPageItem(page, page === currentPage));
-    }
-
-    // Dots between third and last pages
-    if (currentPage > 4) {
-        pagination.appendChild(createDots());
-    }
-
-    // Pages around current page
-    if (currentPage > 3 && currentPage < totalPages - 2) {
-        pagination.appendChild(createPageItem(currentPage - 1));
-        pagination.appendChild(createPageItem(currentPage, true));
-        pagination.appendChild(createPageItem(currentPage + 1));
-    }
-
-    // Dots before last two pages
-    if (currentPage < totalPages - 3) {
-        pagination.appendChild(createDots());
-    }
-
-    // Last two pages
-    for (let page = totalPages - 1; page <= totalPages; page++) {
-        if (page >= 4) {
+    if (totalPages <= 5) {
+        for (let page = 1; page <= totalPages; page++) {
             pagination.appendChild(createPageItem(page, page === currentPage));
+        }
+    } else {
+
+        if (currentPage <= 3) {
+            for (let page = 1; page <= 3; page++) {
+                pagination.appendChild(createPageItem(page, page === currentPage));
+            }
+            pagination.appendChild(createDots());
+            pagination.appendChild(createPageItem(totalPages));
+        } else if (currentPage >= totalPages - 2) {
+
+            pagination.appendChild(createPageItem(1));
+            pagination.appendChild(createDots());
+            for (let page = totalPages - 2; page <= totalPages; page++) {
+                pagination.appendChild(createPageItem(page, page === currentPage));
+            }
+        } else {
+
+            pagination.appendChild(createPageItem(1));
+            pagination.appendChild(createDots());
+            pagination.appendChild(createPageItem(currentPage - 1));
+            pagination.appendChild(createPageItem(currentPage, true));
+            pagination.appendChild(createPageItem(currentPage + 1));
+            pagination.appendChild(createDots());
+            pagination.appendChild(createPageItem(totalPages));
         }
     }
 
-    // Add "Next" arrow
     const nextPageItem = document.createElement('li');
     nextPageItem.className = `page-item ${currentPage === totalPages ? 'disabled' : ''}`;
     nextPageItem.innerHTML = `<a class="page-link" href="#" aria-label="Next" onclick="loadEvents(${currentPage + 1})"><span aria-hidden="true">&raquo;</span></a>`;
     pagination.appendChild(nextPageItem);
 }
+
