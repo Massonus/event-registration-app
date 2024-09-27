@@ -12,7 +12,7 @@
 
 1. Clone the repository:
     ```bash
-    git clone <this_repository_url>
+    git clone https://github.com/Massonus/event-registration-app.git
     ```
 2. Install dependencies:
     ```bash
