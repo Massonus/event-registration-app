@@ -3,7 +3,7 @@ body {
 }
 
 #events-list {
-    margin-top: 20px;
+    margin-top: 15px;
 }
 
 .event-card {
@@ -21,7 +21,6 @@ body {
     overflow: hidden;
     text-overflow: ellipsis;
 }
-
 
 button {
     margin-right: 10px;

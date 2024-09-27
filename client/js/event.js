@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Обработка кнопки переключения режимов
     document.getElementById('toggleMode').addEventListener('click', () => {
         isInfiniteScroll = !isInfiniteScroll;
-        document.getElementById('pagination').style.display = isInfiniteScroll ? 'none' : 'block';
+        document.getElementById('pagination').style.display = isInfiniteScroll ? 'none' : 'flex';
         document.getElementById('loadMore').style.display = isInfiniteScroll ? 'block' : 'none';
         loadEvents();
     });
