@@ -1,8 +1,6 @@
 # Advanced Level
 
-## Hosted Application
-
-You can access the live version of the application at: <a href="http://ec2-18-156-135-252.eu-central-1.compute.amazonaws.com/" target="_blank">Click here to see the deployment</a>
+## You can access the live version of the application at: <a href="http://ec2-18-156-135-252.eu-central-1.compute.amazonaws.com/" target="_blank">Click here to see the deployment</a>
 
 ## Tech Stack
 
