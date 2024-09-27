@@ -36,18 +36,31 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('sortBy').addEventListener('change', () => loadEvents());
     document.getElementById('sortOrder').addEventListener('change', () => loadEvents());
 
+    const handleScroll = () => {
+
+        const scrollTop = window.scrollY;
+        const windowHeight = window.innerHeight;
+        const documentHeight = document.documentElement.scrollHeight;
+
+        if (scrollTop + windowHeight >= documentHeight - 100) {
+            const currentPage = parseInt(document.querySelector('#pagination .page-item.active')?.textContent || 1);
+            loadEvents(currentPage + 1, 8, true);
+        }
+    };
+
     document.getElementById('toggleMode').addEventListener('click', () => {
         isInfiniteScroll = !isInfiniteScroll;
         document.getElementById('pagination').style.display = isInfiniteScroll ? 'none' : 'flex';
-        document.getElementById('loadMore').style.display = isInfiniteScroll ? 'block' : 'none';
-        loadEvents();
-    });
-
-    document.getElementById('loadMore').addEventListener('click', () => {
         const currentPage = parseInt(document.querySelector('#pagination .page-item.active')?.textContent || 1);
-        loadEvents(currentPage + 1, 8, true);
-    });
 
+        if (isInfiniteScroll) {
+            window.addEventListener('scroll', handleScroll);
+            loadEvents(1, 8, true);
+        } else {
+            window.removeEventListener('scroll', handleScroll);
+            loadEvents(currentPage, 8, false);
+        }
+    });
 
 });
 
@@ -69,7 +82,7 @@ function loadEvents(page = 1, limit = 8, append = false) {
             }
         })
         .catch(error => {
-            console.error('Ошибка загрузки событий:', error);
+            console.error('Event load error:', error);
         });
 }
 
