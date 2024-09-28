@@ -5,6 +5,6 @@
 ## Tech Stack
 
 - **Frontend**: HTML, CSS, JavaScript (with Bootstrap)
-- **Backend**: NodeJS (Express.js)
+- **Backend**: Node.js (Express.js)
 - **Database**: MongoDB
 - **Third-party API (Ticketmaster.com)**: A separate script runs every 4 hours, fetching available events
